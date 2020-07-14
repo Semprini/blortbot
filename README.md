@@ -4,7 +4,9 @@ Twitchbot which implements natural landuage processing with wikipedia pages as c
 Comes with 2 bots:
 
 ## BaseBot
-An extensible bot which recognises !hello messages and responds with hello <user>
+An extensible bot which recognises !hello messages and responds with hello {user}.
+
+Uses only standard library so no need to install dependencies
 
 To run you need to set 3 environment variables:
  - BOT_NAME
@@ -29,6 +31,10 @@ Extends BaseBot by overriding handle_direct_message and adding more commands:
  - !learn: Swap knowledge to new subject
 
 Once a subject has been learned then you can message @blortbot to get answers. 
+
+BlortBot does have dependencies so use:
+```pip install -r requirements.txt```
+
 Example:
 ```
  > !learn kung fu
