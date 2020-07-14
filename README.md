@@ -41,6 +41,7 @@ blortbot: I know kung fu
  > @blortbot who was bruce lee's teacher
 blortbot: yip man was the teacher of [[bruce lee]].
 ```
+![kung fu](https://raw.githubusercontent.com/Semprini/blortbot/master/kungfu.png)
 
 BlortBot does have dependencies so use:
 
