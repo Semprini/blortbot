@@ -28,8 +28,15 @@ Extends BaseBot by overriding handle_direct_message and adding more commands:
  - !cookie: Get cookie monsters opinion
  - !learn: Swap knowledge to new subject
 
- Once a subject has been learned then you can message @blortbot to get answers. BlortBot uses
- natural language processing and cosine similarity to respond with a vuaguely intellegible answer.
+Once a subject has been learned then you can message @blortbot to get answers. 
+Example:
+ > !learn kung fu
+blortbot: I know kung fu
+ > @blortbot who was bruce lee's teacher
+blortbot: yip man was the teacher of [[bruce lee]].
 
- More info:
- https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html#sklearn.metrics.pairwise.cosine_similarity
+BlortBot uses natural language processing and cosine similarity to respond with a vuaguely intellegible answer.
+
+More info:
+https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html#sklearn.metrics.pairwise.cosine_similarity
+
