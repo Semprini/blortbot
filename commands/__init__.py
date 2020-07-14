@@ -1,4 +1,6 @@
 import random
+# from typing import O
+
 import requests
 
 
@@ -33,6 +35,8 @@ def command_blortbot(bot, user, msg):
 def command_learn(bot, user, msg):
     # Skip the !learn command and get the topic
     topic = msg[7:]
+    if len(topic) < 3:
+        return
 
     url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={topic}&limit=1&namespace=0&format=json"
     response = requests.get(url, headers={"accept": "application/json"})
