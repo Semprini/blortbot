@@ -31,12 +31,16 @@ def command_blortbot(bot, user, msg):
 
 
 def command_learn(bot, user, msg):
-    value = msg.lstrip("!learn ")
+    # Skip the !learn command and get the topic
+    topic = msg[7:]
 
-    url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={value}&limit=1&namespace=0&format=json"
+    url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={topic}&limit=1&namespace=0&format=json"
     response = requests.get(url, headers={"accept": "application/json"})
     if response.status_code == 200:
         data = response.json()
+        if len(data[1]) == 0:
+            bot.send_message("Sorry, " + topic + " bores me.")
+            return
         page = data[1][0]
 
         url = f"https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles={page}&rvslots=*&rvprop=content&formatversion=2&format=json"
@@ -54,11 +58,11 @@ def command_learn(bot, user, msg):
                 content = data["query"]["pages"][0]["revisions"][0]["slots"]["main"]["content"]
 
             if bot.corpus_name:
-                bot.send_message("I know " + value + " but I have forgotten " + bot.corpus_name)
+                bot.send_message("I know " + topic + " but I have forgotten " + bot.corpus_name)
             else:
-                bot.send_message("I know " + value)
+                bot.send_message("I know " + topic)
 
-            bot.corpus_name = value
+            bot.corpus_name = topic
             bot.corpus_url = url
             bot.corpus_data = content.lower()
 

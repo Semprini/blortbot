@@ -86,5 +86,5 @@ if __name__ == "__main__":
     # Get the value for this here: https://twitchapps.com/tmi/
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
 
-    bb = BlortBot("blortbot", TOKEN, "blortbot", COMMANDS)
+    bb = BlortBot("blortbot", TOKEN, "beginbot", COMMANDS)
     bb.run()

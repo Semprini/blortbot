@@ -94,7 +94,7 @@ class BaseBot(object):
 
         while not self.finished:
             chat_buffer = chat_buffer + self.server.recv(2048).decode("utf-8")
-            if len(chat_buffer > 0):
+            if len(chat_buffer) > 0:
                 messages = chat_buffer.split("\r\n")
                 chat_buffer = messages.pop()
 
