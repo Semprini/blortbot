@@ -13,8 +13,10 @@ To run you need to set 3 environment variables:
  - TOKEN
  - CHANNEL
 
-Then run
-> python basebot.py
+Then run:
+```
+python basebot.py
+```
 
 To add commands you can add to COMMANDS dictionary:
 ```python
@@ -33,9 +35,10 @@ Extends BaseBot by overriding handle_direct_message and adding more commands:
 Once a subject has been learned then you can message @blortbot to get answers. 
 
 BlortBot does have dependencies so use:
+
 ```pip install -r requirements.txt```
 
-Example:
+For Example in twitch chat:
 ```
  > !learn kung fu
 blortbot: I know kung fu
@@ -43,7 +46,7 @@ blortbot: I know kung fu
 blortbot: yip man was the teacher of [[bruce lee]].
 ```
 
-BlortBot uses natural language processing and cosine similarity to respond with a vuaguely intellegible answer.
+BlortBot uses natural language processing and cosine similarity to respond with a vaguely intellegible answer.
 
 More info:
 https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html#sklearn.metrics.pairwise.cosine_similarity
