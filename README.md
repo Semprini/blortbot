@@ -30,10 +30,12 @@ Extends BaseBot by overriding handle_direct_message and adding more commands:
 
 Once a subject has been learned then you can message @blortbot to get answers. 
 Example:
+```
  > !learn kung fu
 blortbot: I know kung fu
  > @blortbot who was bruce lee's teacher
 blortbot: yip man was the teacher of [[bruce lee]].
+```
 
 BlortBot uses natural language processing and cosine similarity to respond with a vuaguely intellegible answer.
 
