@@ -15,7 +15,7 @@ import warnings
 from basebot import BaseBot
 from commands import COMMANDS
 
-
+# Ignore the warnings from sklearn\feature_extraction
 warnings.filterwarnings('ignore')
 
 
@@ -41,7 +41,7 @@ class BlortBot(BaseBot):
         return self.LemTokens(nltk.word_tokenize(text.lower().translate(self.remove_punct_dict)))
 
     def handle_direct_message(self, usr, msg):
-        question = msg.strip(f"@{self.botname}").strip()
+        question = msg.strip(f"@{self.botname} ")
         response = self.response(question).replace("\n", "|")[:350]
         print(f"Answering {question} with {response}")
         self.send_message(response)
@@ -68,12 +68,16 @@ class BlortBot(BaseBot):
             robo_response = self.sent_tokens[idx]
         self.sent_tokens.remove(user_response)
 
+        # Remove references
         secondDelPos = 0
         while secondDelPos != -1:
-            firstDelPos = robo_response.find("<ref>", secondDelPos)
+            firstDelPos = robo_response.find("<ref>")
             secondDelPos = robo_response.find("</ref>", firstDelPos)
-            if firstDelPos != -1 and secondDelPos != -1:
-                robo_response = robo_response.replace(robo_response[firstDelPos: secondDelPos + 6], "")
+            if firstDelPos != -1:
+                if secondDelPos == -1:
+                    robo_response = robo_response.replace(robo_response[firstDelPos:], "")
+                else:
+                    robo_response = robo_response.replace(robo_response[firstDelPos: secondDelPos + 6], "")
 
         return robo_response
 

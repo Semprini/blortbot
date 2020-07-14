@@ -17,4 +17,4 @@ class TestJSONOutput(unittest.TestCase):
         self.bb.process_base_msg("1user 2 3 -!cookie")
         self.bb.process_base_msg("1user 2 3 -!learn kung fu")
         self.bb.process_base_msg("1user 2 3 -@blortbot who was bruce lee's teacher")
-        self.bb.process_base_msg("1user 2 3 -@blortbot what are the origins")
+        self.bb.process_base_msg("1user 2 3 -@blortbot what are kung fu's origins")
