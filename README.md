@@ -31,7 +31,7 @@ More info:
 https://scikit-learn.org/stable/modules/metrics.html#cosine-similarity
 
 ## BaseBot
-An extensible bot which recognises !hello messages and responds with hello {user}.
+An extensible bot which recognises !hello messages and responds with hello {user}. Oo'd from https://gitlab.com/beginbot/python_twitch_bot_no_deps
 
 Uses only standard library so no need to install dependencies
 

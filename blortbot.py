@@ -6,17 +6,43 @@
 """
 import os
 import string
+import warnings
+
 import nltk
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import warnings
 
 from basebot import BaseBot
-from commands import COMMANDS
 
 # Ignore the warnings from sklearn\feature_extraction
 warnings.filterwarnings('ignore')
+
+
+class Corpus():
+    def __init__(self, topic, url, content):
+        self.topic = topic
+        self.url = url
+        self.content = content.lower()
+        self.sent_tokens = None
+        self.word_tokens = None
+
+        self._lemmer = WordNetLemmatizer()
+        self._remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
+
+        self.preprocess()
+
+    def preprocess(self):
+        # converts to list of sentences
+        self.sent_tokens = nltk.sent_tokenize(self.content)
+        # converts to list of words
+        self.word_tokens = nltk.word_tokenize(self.content)
+
+    def LemTokens(self, tokens):
+        return [self._lemmer.lemmatize(token) for token in tokens]
+
+    def LemNormalize(self, text):
+        return self.LemTokens(nltk.word_tokenize(text.lower().translate(self._remove_punct_dict)))
 
 
 class BlortBot(BaseBot):
@@ -25,38 +51,19 @@ class BlortBot(BaseBot):
 
         nltk.download('popular', quiet=True)
 
-        self.corpus_name = None
-        self.corpus_url = None
-        self.corpus_data = None
-        self.sent_tokens = None
-        self.word_tokens = None
-
-        self.lemmer = WordNetLemmatizer()
-        self.remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
-
-    def LemTokens(self, tokens):
-        return [self.lemmer.lemmatize(token) for token in tokens]
-
-    def LemNormalize(self, text):
-        return self.LemTokens(nltk.word_tokenize(text.lower().translate(self.remove_punct_dict)))
+        self._corpus = None
 
     def handle_direct_message(self, usr, msg):
         question = msg.strip(f"@{self.botname} ")
         response = self.response(question).replace("\n", "|")[:350]
-        print(f"Answering {question} with {response}")
+        print(f"Answering {question} with: {response}")
         self.send_message(response)
-
-    def preprocess_corpus(self):
-        # converts to list of sentences
-        self.sent_tokens = nltk.sent_tokenize(self.corpus_data)
-        # converts to list of words
-        self.word_tokens = nltk.word_tokenize(self.corpus_data)
 
     def response(self, user_response):
         robo_response = ''
-        self.sent_tokens.append(user_response)
-        TfidfVec = TfidfVectorizer(tokenizer=self.LemNormalize, stop_words='english')
-        tfidf = TfidfVec.fit_transform(self.sent_tokens)
+        self.corpus.sent_tokens.append(user_response)
+        TfidfVec = TfidfVectorizer(tokenizer=self.corpus.LemNormalize, stop_words='english')
+        tfidf = TfidfVec.fit_transform(self.corpus.sent_tokens)
         vals = cosine_similarity(tfidf[-1], tfidf)
         idx = vals.argsort()[0][-2]
         flat = vals.flatten()
@@ -65,8 +72,8 @@ class BlortBot(BaseBot):
         if(req_tfidf == 0):
             robo_response = "I'm sorry! I don't understand you"
         else:
-            robo_response = self.sent_tokens[idx]
-        self.sent_tokens.remove(user_response)
+            robo_response = self.corpus.sent_tokens[idx]
+        self.corpus.sent_tokens.remove(user_response)
 
         # Remove references
         secondDelPos = 0
@@ -81,10 +88,24 @@ class BlortBot(BaseBot):
 
         return robo_response
 
+    @property
+    def corpus(self):
+        return self._corpus
+
+    @corpus.setter
+    def corpus(self, corpus):
+        if self._corpus is not None:
+            self.send_message("I know " + corpus.topic + " but I have forgotten " + self._corpus.topic)
+        else:
+            self.send_message("I know " + corpus.topic)
+
+        self._corpus = corpus
+
 
 if __name__ == "__main__":
     # Get the value for this here: https://twitchapps.com/tmi/
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
 
+    from commands import COMMANDS
     bb = BlortBot("blortbot", TOKEN, "beginbot", COMMANDS)
     bb.run()

@@ -1,10 +1,12 @@
 import random
-# from typing import O
+from typing import Any
 
 import requests
 
+from blortbot import Corpus
 
-def command_qod(bot, user, msg):
+
+def command_qod(bot: Any, user: str, msg: str) -> None:
     response = requests.get("https://quotes.rest/qod?language=en", headers={"accept": "application/json"})
     if response.status_code == 200:
         data = response.json()
@@ -12,7 +14,7 @@ def command_qod(bot, user, msg):
         bot.send_message(msg)
 
 
-def command_cookie(bot, user, msg):
+def command_cookie(bot: Any, user: str, msg: str) -> None:
     cookie_quotes = (
         "C is for cookie, that's good enough for me",
         "Home is the place heart is. The heart where cookie is. Math clear: the home is a cookie.",
@@ -24,7 +26,7 @@ def command_cookie(bot, user, msg):
     bot.send_message(random.choice(cookie_quotes))
 
 
-def command_blortbot(bot, user, msg):
+def command_blortbot(bot: Any, user: str, msg: str) -> None:
     msg = "Blortbot knows stuff:"
     for key in COMMANDS.keys():
         msg += " =>  {}: {}".format(key, COMMANDS[key][1])
@@ -32,7 +34,7 @@ def command_blortbot(bot, user, msg):
     bot.send_message(msg)
 
 
-def command_learn(bot, user, msg):
+def command_learn(bot: Any, user: str, msg: str) -> None:
     # Skip the !learn command and get the topic
     topic = msg[7:]
     if len(topic) < 3:
@@ -61,16 +63,7 @@ def command_learn(bot, user, msg):
                 data = response.json()
                 content = data["query"]["pages"][0]["revisions"][0]["slots"]["main"]["content"]
 
-            if bot.corpus_name:
-                bot.send_message("I know " + topic + " but I have forgotten " + bot.corpus_name)
-            else:
-                bot.send_message("I know " + topic)
-
-            bot.corpus_name = topic
-            bot.corpus_url = url
-            bot.corpus_data = content.lower()
-
-        bot.preprocess_corpus()
+            bot.corpus = Corpus(topic, url, content)
 
 
 COMMANDS = {
