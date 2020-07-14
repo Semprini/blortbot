@@ -49,5 +49,5 @@ BlortBot does have dependencies so use:
 BlortBot uses natural language processing and cosine similarity to respond with a vaguely intellegible answer.
 
 More info:
-https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html#sklearn.metrics.pairwise.cosine_similarity
+https://scikit-learn.org/stable/modules/metrics.html#cosine-similarity
 
