@@ -8,6 +8,8 @@ ENCODING = "utf-8"
 CHAT_MSG = "PRIVMSG"
 COMMAND_TRIGGER = "!"
 
+COMMANDS = {}
+
 
 class BaseBot(object):
     def __init__(self, botname: str, token: str, channel: str, commands: dict):
@@ -103,6 +105,15 @@ class BaseBot(object):
         print("Bot finished")
 
 
+def command(name, desc):
+    def wrapper(func):
+        """Register a function as a command"""
+        COMMANDS[COMMAND_TRIGGER + name] = (func, desc)
+        return func
+    return wrapper
+
+
+@command('hello', 'responds with hello')
 def command_hello(bot, user, msg):
     bot.send_message(f"Hello {user}")
 
@@ -111,10 +122,6 @@ if __name__ == "__main__":
     BOT_NAME = os.environ["BOT_NAME"]
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
     CHANNEL = os.environ["CHANNEL"]
-
-    COMMANDS = {
-        "!hello": (command_hello, "Sample command"),
-    }
 
     tb = BaseBot(BOT_NAME, TOKEN, CHANNEL, COMMANDS)
     tb.process_base_msg("1user 2b 3c -!hello")

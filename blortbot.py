@@ -106,6 +106,6 @@ if __name__ == "__main__":
     # Get the value for this here: https://twitchapps.com/tmi/
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
 
-    from commands import COMMANDS
+    from basebot import COMMANDS
     bb = BlortBot("blortbot", TOKEN, "beginbot", COMMANDS)
     bb.run()

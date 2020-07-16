@@ -4,8 +4,10 @@ from typing import Any
 import requests
 
 from blortbot import Corpus
+from basebot import command, COMMANDS
 
 
+@command("qod", "Quote of the day")
 def command_qod(bot: Any, user: str, msg: str) -> None:
     response = requests.get("https://quotes.rest/qod?language=en", headers={"accept": "application/json"})
     if response.status_code == 200:
@@ -14,6 +16,7 @@ def command_qod(bot: Any, user: str, msg: str) -> None:
         bot.send_message(msg)
 
 
+@command('cookie', 'Get cookie monsters opinion')
 def command_cookie(bot: Any, user: str, msg: str) -> None:
     cookie_quotes = (
         "C is for cookie, that's good enough for me",
@@ -26,6 +29,7 @@ def command_cookie(bot: Any, user: str, msg: str) -> None:
     bot.send_message(random.choice(cookie_quotes))
 
 
+@command('blortbot', 'List all the magical things blortbot can do')
 def command_blortbot(bot: Any, user: str, msg: str) -> None:
     msg = "Blortbot knows stuff:"
     for key in COMMANDS.keys():
@@ -34,6 +38,7 @@ def command_blortbot(bot: Any, user: str, msg: str) -> None:
     bot.send_message(msg)
 
 
+@command('learn', 'Swap knowledge to new subject')
 def command_learn(bot: Any, user: str, msg: str) -> None:
     # Skip the !learn command and get the topic
     topic = msg[7:]
@@ -64,11 +69,3 @@ def command_learn(bot: Any, user: str, msg: str) -> None:
                 content = data["query"]["pages"][0]["revisions"][0]["slots"]["main"]["content"]
 
             bot.corpus = Corpus(topic, url, content)
-
-
-COMMANDS = {
-    "!blortbot": (command_blortbot, "List all the magical things blortbot knows"),
-    "!qod": (command_qod, "Quote of the day"),
-    "!cookie": (command_cookie, "Get cookie monsters opinion"),
-    "!learn": (command_learn, "Swap knowledge to new subject")
-}
