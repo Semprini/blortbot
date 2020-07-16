@@ -1,6 +1,7 @@
-from typing import Tuple, Any
+from typing import Tuple, Any, Optional
 import socket
 import os
+import functools
 
 ARE_YOU_ALIVE = "PING"
 I_AM_ALIVE = "PONG"
@@ -8,15 +9,18 @@ ENCODING = "utf-8"
 CHAT_MSG = "PRIVMSG"
 COMMAND_TRIGGER = "!"
 
-COMMANDS = {}
+COMMANDS: dict = {}
 
 
 class BaseBot(object):
-    def __init__(self, botname: str, token: str, channel: str, commands: dict):
+    def __init__(self, botname: str, token: str, channel: str, commands: Optional[dict] = None):
         self.botname = botname
         self.token: str = token
         self.channel: str = channel
-        self.commands = commands
+        if commands:
+            self.commands = commands
+        else:
+            self.commands = COMMANDS
 
         self.finished: bool = False
         self.server: Any = None
@@ -106,6 +110,7 @@ class BaseBot(object):
 
 
 def command(name, desc):
+    @functools.wraps(name, desc)
     def wrapper(func):
         """Register a function as a command"""
         COMMANDS[COMMAND_TRIGGER + name] = (func, desc)
@@ -123,6 +128,6 @@ if __name__ == "__main__":
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
     CHANNEL = os.environ["CHANNEL"]
 
-    tb = BaseBot(BOT_NAME, TOKEN, CHANNEL, COMMANDS)
+    tb = BaseBot(BOT_NAME, TOKEN, CHANNEL)
     tb.process_base_msg("1user 2b 3c -!hello")
     tb.run()

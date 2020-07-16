@@ -7,6 +7,7 @@
 import os
 import string
 import warnings
+from typing import Optional
 
 import nltk
 from nltk.stem import WordNetLemmatizer
@@ -46,7 +47,7 @@ class Corpus():
 
 
 class BlortBot(BaseBot):
-    def __init__(self, botname: str, token: str, channel: str, commands: dict):
+    def __init__(self, botname: str, token: str, channel: str, commands: Optional[dict] = None):
         super().__init__(botname, token, channel, commands)
 
         nltk.download('popular', quiet=True)
@@ -106,6 +107,6 @@ if __name__ == "__main__":
     # Get the value for this here: https://twitchapps.com/tmi/
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
 
-    from basebot import COMMANDS
-    bb = BlortBot("blortbot", TOKEN, "beginbot", COMMANDS)
+    import commands as command_set  # noqa: F401
+    bb = BlortBot("blortbot", TOKEN, "beginbot")
     bb.run()

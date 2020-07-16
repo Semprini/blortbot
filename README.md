@@ -49,10 +49,10 @@ Then run:
 python basebot.py
 ```
 
-To add commands you can add to COMMANDS dictionary:
+To add commands you annotate a function with the command decorator:
 ```python
-    COMMANDS = {
-        "!hello": (command_hello, "Sample command"),
-    }
+@command('hello', 'responds with hello')
+def command_hello(bot, user, msg):
+    ...
 ```
 
