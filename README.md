@@ -25,6 +25,10 @@ BlortBot does have dependencies so use:
 
 ```pip install -r requirements.txt```
 
+And needs an environment variable:
+ 
+ - TWITCH_OAUTH_TOKEN # Get the value for this here: https://twitchapps.com/tmi/
+
 BlortBot uses natural language processing and cosine similarity to respond with a vaguely intellegible answer.
 
 More info:
