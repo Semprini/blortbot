@@ -12,12 +12,15 @@ class TestJSONOutput(unittest.TestCase):
         self.bb = BlortBot("blortbot", TOKEN, "blortbot")
 
     def test_blortbot(self):
-        self.bb.process_base_msg("1user 2 3 -!blortbot")
+        output = self.bb.process_base_msg("1user 2 3 -!blortbot")
+        self.assertIsNotNone(output)
 
     def test_cookie(self):
-        self.bb.process_base_msg("1user 2 3 -!cookie")
+        output = self.bb.process_base_msg("1user 2 3 -!cookie")
+        self.assertIsNotNone(output)
 
     def test_ai(self):
         self.bb.process_base_msg("1user 2 3 -!learn kung fu")
         self.bb.process_base_msg("1user 2 3 -@blortbot who was bruce lee's teacher")
-        self.bb.process_base_msg("1user 2 3 -@blortbot what are kung fu's origins")
+        output = self.bb.process_base_msg("1user 2 3 -@blortbot what are kung fu's origins")
+        self.assertIsNotNone(output)

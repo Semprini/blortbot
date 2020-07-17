@@ -54,22 +54,24 @@ class BaseBot(object):
     def _is_command_msg(self, msg: str) -> bool:
         return msg[0] == COMMAND_TRIGGER and msg[1] != COMMAND_TRIGGER
 
-    def process_base_msg(self, irc_response: str) -> None:
+    def process_base_msg(self, irc_response: str) -> Optional[str]:
         if ARE_YOU_ALIVE in irc_response:
             self.pong()
 
         split_response = irc_response.split()
 
         if len(split_response) < 4:
-            return
+            return None
 
         user, msg = self._parse_user_and_msg(irc_response)
         if self._is_command_msg(msg):
-            self.handle_command(user, msg)
+            output = self.handle_command(user, msg)
         elif msg.startswith("@blortbot"):
-            self.handle_direct_message(user, msg)
+            output = self.handle_direct_message(user, msg)
         else:
-            print(f"{user}: {msg}")
+            output = f"{user}: {msg}"
+            print(output)
+        return output
 
     # TODO: refactor this sillyness
     def _parse_user_and_msg(self, irc_response) -> Tuple:
@@ -81,16 +83,18 @@ class BaseBot(object):
         msg = f"{first_word} {rest_of_the_message}"
         return user, msg
 
-    def handle_command(self, user, msg):
+    def handle_command(self, user, msg) -> Optional[str]:
         command = msg.split(' ')
         if command[0] in self.commands.keys():
             print(f"Running command {msg} for {user}")
-            self.commands[command[0]][0](self, user, msg)
+            return self.commands[command[0]][0](self, user, msg)
         else:
             print(f"Unknown command: {msg} from {user}")
+            return None
 
-    def handle_direct_message(self, user, msg):
+    def handle_direct_message(self, user, msg) -> Optional[str]:
         print(f"{user}: {msg}")
+        return None
 
     def run(self):
         self._connect_to_twitch()
@@ -120,7 +124,9 @@ def command(name, desc):
 
 @command('hello', 'responds with hello')
 def command_hello(bot, user, msg):
-    bot.send_message(f"Hello {user}")
+    output = f"Hello {user}"
+    bot.send_message(output)
+    return output
 
 
 if __name__ == "__main__":

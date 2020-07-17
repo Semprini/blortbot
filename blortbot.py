@@ -54,11 +54,15 @@ class BlortBot(BaseBot):
 
         self._corpus = None
 
-    def handle_direct_message(self, usr, msg):
+    def handle_direct_message(self, usr, msg) -> Optional[str]:
         question = msg.strip(f"@{self.botname} ")
+        if question is None:
+            return None
+
         response = self.response(question).replace("\n", "|")[:350]
         print(f"Answering {question} with: {response}")
         self.send_message(response)
+        return response
 
     def response(self, user_response):
         robo_response = ''

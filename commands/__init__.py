@@ -1,5 +1,5 @@
 import random
-from typing import Any
+from typing import Any, Optional
 
 import requests
 
@@ -8,16 +8,18 @@ from basebot import command, COMMANDS
 
 
 @command("qod", "Quote of the day")
-def command_qod(bot: Any, user: str, msg: str) -> None:
+def command_qod(bot: Any, user: str, msg: str) -> Optional[str]:
     response = requests.get("https://quotes.rest/qod?language=en", headers={"accept": "application/json"})
     if response.status_code == 200:
         data = response.json()
         msg = "Quote of the day: " + data['contents']['quotes'][0]['quote'] + " -" + data['contents']['quotes'][0]['author']
         bot.send_message(msg)
+        return msg
+    return None
 
 
 @command('cookie', 'Get cookie monsters opinion')
-def command_cookie(bot: Any, user: str, msg: str) -> None:
+def command_cookie(bot: Any, user: str, msg: str) -> str:
     cookie_quotes = (
         "C is for cookie, that's good enough for me",
         "Home is the place heart is. The heart where cookie is. Math clear: the home is a cookie.",
@@ -26,32 +28,36 @@ def command_cookie(bot: Any, user: str, msg: str) -> None:
         "Onion rings are simply vegetable doughnuts.",
         "I just took a DNA test - turns out 100% cookies… ",
     )
-    bot.send_message(random.choice(cookie_quotes))
+    msg = random.choice(cookie_quotes)
+    bot.send_message(msg)
+    return msg
 
 
 @command('blortbot', 'List all the magical things blortbot can do')
-def command_blortbot(bot: Any, user: str, msg: str) -> None:
+def command_blortbot(bot: Any, user: str, msg: str) -> str:
     msg = "Blortbot knows stuff:"
     for key in COMMANDS.keys():
         msg += " =>  {}: {}".format(key, COMMANDS[key][1])
     msg += "  @blortbot for questions on the thing it knows."
     bot.send_message(msg)
+    return msg
 
 
 @command('learn', 'Swap knowledge to new subject')
-def command_learn(bot: Any, user: str, msg: str) -> None:
+def command_learn(bot: Any, user: str, msg: str) -> Optional[str]:
     # Skip the !learn command and get the topic
     topic = msg[7:]
     if len(topic) < 3:
-        return
+        return None
 
     url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={topic}&limit=1&namespace=0&format=json"
     response = requests.get(url, headers={"accept": "application/json"})
     if response.status_code == 200:
         data = response.json()
         if len(data[1]) == 0:
-            bot.send_message("Sorry, " + topic + " bores me.")
-            return
+            msg = "Sorry, " + topic + " bores me."
+            bot.send_message(msg)
+            return msg
         page = data[1][0]
 
         url = f"https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles={page}&rvslots=*&rvprop=content&formatversion=2&format=json"
@@ -69,3 +75,5 @@ def command_learn(bot: Any, user: str, msg: str) -> None:
                 content = data["query"]["pages"][0]["revisions"][0]["slots"]["main"]["content"]
 
             bot.corpus = Corpus(topic, url, content)
+            return "Learnt" + topic
+    return None
