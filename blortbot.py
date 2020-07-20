@@ -65,6 +65,9 @@ class BlortBot(BaseBot):
         return response
 
     def response(self, user_response):
+        if self.corpus is None:
+            return "I'm a bit thick till I learn something."
+            
         robo_response = ''
         self.corpus.sent_tokens.append(user_response)
         TfidfVec = TfidfVectorizer(tokenizer=self.corpus.LemNormalize, stop_words='english')
