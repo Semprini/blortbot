@@ -122,7 +122,7 @@ def command(name, desc):
     return wrapper
 
 
-@command('hello blort', 'responds with hello')
+@command('helloblort', 'responds with hello')
 def command_hello(bot, user, msg):
     output = f"Hello {user}"
     bot.send_message(output)
