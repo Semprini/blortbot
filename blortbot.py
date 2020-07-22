@@ -114,6 +114,14 @@ if __name__ == "__main__":
     # Get the value for this here: https://twitchapps.com/tmi/
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
 
+    BOT_NAME = "blortbot"
+    if "BOT_NAME" in os.environ.keys():
+        BOT_NAME = os.environ["BOT_NAME"]
+
+    BOT_CHANNEL = "beginbot"
+    if "BOT_CHANNEL" in os.environ.keys():
+        BOT_CHANNEL = os.environ["BOT_CHANNEL"]
+
     import commands as command_set  # noqa: F401
-    bb = BlortBot("blortbot", TOKEN, "beginbot")
+    bb = BlortBot(BOT_NAME, TOKEN, BOT_CHANNEL)
     bb.run()
