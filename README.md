@@ -9,7 +9,7 @@ docker run -e TWITCH_OAUTH_TOKEN='your token heere' --name blortbot_1 blortbot
 
 You can also override these environment variables using more -e args when running:
 - BOT_NAME (default = blortbot)
-- CHANNEL (default = beginbot)
+- BOT_CHANNEL (default = beginbot)
 
 
 Code has 2 bots:
@@ -53,8 +53,8 @@ Uses only standard library so no need to install dependencies
 
 To run you need to set 3 environment variables:
  - BOT_NAME
- - TOKEN
- - CHANNEL
+ - TWITCH_OAUTH_TOKEN
+ - BOT_CHANNEL
 
 Then run:
 ```
