@@ -19,6 +19,8 @@ WORKDIR /code/
 
 RUN useradd blortbot
 RUN chown -R blortbot /code
+RUN mkdir -p /home/blortbot
+RUN chown -R blortbot /home/blortbot
 USER blortbot
 
 CMD exec python blortbot.py
