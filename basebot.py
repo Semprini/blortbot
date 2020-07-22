@@ -132,8 +132,8 @@ def command_hello(bot, user, msg):
 if __name__ == "__main__":
     BOT_NAME = os.environ["BOT_NAME"]
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
-    CHANNEL = os.environ["CHANNEL"]
+    BOT_CHANNEL = os.environ["BOT_CHANNEL"]
 
-    tb = BaseBot(BOT_NAME, TOKEN, CHANNEL)
+    tb = BaseBot(BOT_NAME, TOKEN, BOT_CHANNEL)
     tb.process_base_msg("1user 2b 3c -!hello")
     tb.run()
