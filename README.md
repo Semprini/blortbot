@@ -2,8 +2,10 @@
 Twitchbot which implements natural landuage processing with wikipedia pages as corpus
 
 ## Docker
+``` bash
 docker build -t blortbot .
 docker run -e TWITCH_OAUTH_TOKEN='your token heere' --name blortbot_1 blortbot
+```
 
 You can also override these environment variables using more -e args when running:
 - BOT_NAME (default = blortbot)
