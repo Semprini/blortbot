@@ -1,4 +1,5 @@
 from typing import Tuple, Any, Optional
+from types import ModuleType
 import socket
 import os
 import pkgutil
@@ -8,8 +9,6 @@ I_AM_ALIVE = "PONG"
 ENCODING = "utf-8"
 CHAT_MSG = "PRIVMSG"
 COMMAND_TRIGGER = "!"
-
-COMMANDS: dict = {}
 
 
 class BaseBot(object):
@@ -24,8 +23,8 @@ class BaseBot(object):
         self.server: Any = None
 
     def get_commands(self, command_module_name):
-        self.commands = {}
-        command_module = __import__(command_module_name)
+        self.commands: dict = {}
+        command_module: ModuleType = __import__(command_module_name)
         for _, module_name, _ in pkgutil.walk_packages(
                 getattr(command_module, "__path__"),  # type: ignore  # mypy issue #1422
                 command_module.__name__ + '.'):
