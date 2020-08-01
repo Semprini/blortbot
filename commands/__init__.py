@@ -1,11 +1,11 @@
 import random
 import requests
-from typing import Any, Optional
+from typing import Any, Optional, Dict, Callable, Tuple
 import functools
 
 from basebot import COMMAND_TRIGGER
 
-COMMANDS = {}
+COMMANDS: Dict[str, Tuple[Callable, str]] = {}
 
 
 def command(name, desc):
