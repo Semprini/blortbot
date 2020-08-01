@@ -1,10 +1,27 @@
 import random
-from typing import Any, Optional
-
 import requests
+from typing import Any, Optional
+import functools
 
-from blortbot import Corpus
-from basebot import command, COMMANDS
+from basebot import COMMAND_TRIGGER
+
+COMMANDS = {}
+
+
+def command(name, desc):
+    @functools.wraps(name, desc)
+    def wrapper(func):
+        """Register a function as a command"""
+        COMMANDS[COMMAND_TRIGGER + name] = (func, desc)
+        return func
+    return wrapper
+
+
+@command('helloblort', 'responds with hello')
+def command_hello(bot, user, msg):
+    output = f"Hello {user}"
+    bot.send_message(output)
+    return output
 
 
 @command("qod", "Quote of the day")
@@ -41,39 +58,3 @@ def command_blortbot(bot: Any, user: str, msg: str) -> str:
     msg += "  @blortbot for questions on the thing it knows."
     bot.send_message(msg)
     return msg
-
-
-@command('learn', 'Swap knowledge to new subject')
-def command_learn(bot: Any, user: str, msg: str) -> Optional[str]:
-    # Skip the !learn command and get the topic
-    topic = msg[7:]
-    if len(topic) < 3:
-        return None
-
-    url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={topic}&limit=1&namespace=0&format=json"
-    response = requests.get(url, headers={"accept": "application/json"})
-    if response.status_code == 200:
-        data = response.json()
-        if len(data[1]) == 0:
-            msg = "Sorry, " + topic + " bores me."
-            bot.send_message(msg)
-            return msg
-        page = data[1][0]
-
-        url = f"https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles={page}&rvslots=*&rvprop=content&formatversion=2&format=json"
-        response = requests.get(url, headers={"accept": "application/json"})
-        if response.status_code == 200:
-            data = response.json()
-
-            content = data["query"]["pages"][0]["revisions"][0]["slots"]["main"]["content"]
-            if content.lower().startswith("#redirect"):
-                page = content[9:].replace("[[", "").replace("]]", "").split('\n')[0].strip()
-
-                url = f"https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles={page}&rvslots=*&rvprop=content&formatversion=2&format=json"
-                response = requests.get(url, headers={"accept": "application/json"})
-                data = response.json()
-                content = data["query"]["pages"][0]["revisions"][0]["slots"]["main"]["content"]
-
-            bot.corpus = Corpus(topic, url, content)
-            return "Learnt" + topic
-    return None

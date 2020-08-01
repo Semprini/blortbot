@@ -9,7 +9,7 @@ class TestJSONOutput(unittest.TestCase):
     def setUp(self):
         # Get the value for this here: https://twitchapps.com/tmi/
         TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
-        self.bb = BlortBot("blortbot", TOKEN, "blortbot")
+        self.bb = BlortBot("blortbot", TOKEN, "blortbot", "commands")
 
     def test_blortbot(self):
         output = self.bb.process_base_msg("1user 2 3 -!blortbot")
@@ -19,8 +19,18 @@ class TestJSONOutput(unittest.TestCase):
         output = self.bb.process_base_msg("1user 2 3 -!cookie")
         self.assertIsNotNone(output)
 
+    def test_learn(self):
+        output = self.bb.process_base_msg("1user 2 3 -!learn phobias")
+        self.assertIsNotNone(output)
+
     def test_ai(self):
         self.bb.process_base_msg("1user 2 3 -!learn kung fu")
         self.bb.process_base_msg("1user 2 3 -@blortbot who was bruce lee's teacher")
         output = self.bb.process_base_msg("1user 2 3 -@blortbot what are kung fu's origins")
+        self.assertIsNotNone(output)
+
+    def test_ai2(self):
+        output = self.bb.process_base_msg("1user 2 3 -!learn phobias")
+        output = self.bb.process_base_msg("1user 2 3 -@blortbot fear of spiders")
+        output = self.bb.process_base_msg("1user 2 3 -@blortbot Arachnophobia")
         self.assertIsNotNone(output)

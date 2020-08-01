@@ -47,8 +47,8 @@ class Corpus():
 
 
 class BlortBot(BaseBot):
-    def __init__(self, botname: str, token: str, channel: str, commands: Optional[dict] = None):
-        super().__init__(botname, token, channel, commands)
+    def __init__(self, botname: str, token: str, channel: str, command_module_name: str):
+        super().__init__(botname, token, channel, command_module_name)
 
         nltk.download('popular', quiet=True)
 
@@ -122,6 +122,5 @@ if __name__ == "__main__":
     if "BOT_CHANNEL" in os.environ.keys():
         BOT_CHANNEL = os.environ["BOT_CHANNEL"]
 
-    import commands as command_set  # noqa: F401
-    bb = BlortBot(BOT_NAME, TOKEN, BOT_CHANNEL)
+    bb = BlortBot(BOT_NAME, TOKEN, BOT_CHANNEL, "commands")
     bb.run()

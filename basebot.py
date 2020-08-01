@@ -1,7 +1,7 @@
 from typing import Tuple, Any, Optional
 import socket
 import os
-import functools
+import pkgutil
 
 ARE_YOU_ALIVE = "PING"
 I_AM_ALIVE = "PONG"
@@ -13,17 +13,24 @@ COMMANDS: dict = {}
 
 
 class BaseBot(object):
-    def __init__(self, botname: str, token: str, channel: str, commands: Optional[dict] = None):
+    def __init__(self, botname: str, token: str, channel: str, command_module_name: str):
         self.botname = botname
         self.token: str = token
         self.channel: str = channel
-        if commands:
-            self.commands = commands
-        else:
-            self.commands = COMMANDS
+
+        self.commands = self.get_commands(command_module_name)
 
         self.finished: bool = False
         self.server: Any = None
+
+    def get_commands(self, command_module_name):
+        self.commands = {}
+        command_module = __import__(command_module_name)
+        for _, module_name, _ in pkgutil.walk_packages(
+                getattr(command_module, "__path__"),  # type: ignore  # mypy issue #1422
+                command_module.__name__ + '.'):
+            __import__(module_name, fromlist=['__trash'], level=0)
+        return command_module.COMMANDS
 
     def _handshake(self) -> None:
         # Note the bot name will not be what is specified here,
@@ -61,6 +68,7 @@ class BaseBot(object):
         split_response = irc_response.split()
 
         if len(split_response) < 4:
+            print("base message format incorrect")
             return None
 
         user, msg = self._parse_user_and_msg(irc_response)
@@ -113,27 +121,11 @@ class BaseBot(object):
         print("Bot finished")
 
 
-def command(name, desc):
-    @functools.wraps(name, desc)
-    def wrapper(func):
-        """Register a function as a command"""
-        COMMANDS[COMMAND_TRIGGER + name] = (func, desc)
-        return func
-    return wrapper
-
-
-@command('helloblort', 'responds with hello')
-def command_hello(bot, user, msg):
-    output = f"Hello {user}"
-    bot.send_message(output)
-    return output
-
-
 if __name__ == "__main__":
     BOT_NAME = os.environ["BOT_NAME"]
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
     BOT_CHANNEL = os.environ["BOT_CHANNEL"]
 
-    tb = BaseBot(BOT_NAME, TOKEN, BOT_CHANNEL)
+    tb = BaseBot(BOT_NAME, TOKEN, BOT_CHANNEL, "commands")
     tb.process_base_msg("1user 2b 3c -!hello")
     tb.run()
