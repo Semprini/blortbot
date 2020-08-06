@@ -125,6 +125,6 @@ if __name__ == "__main__":
     TOKEN = os.environ["TWITCH_OAUTH_TOKEN"]
     BOT_CHANNEL = os.environ["BOT_CHANNEL"]
 
-    tb = BaseBot(BOT_NAME, TOKEN, BOT_CHANNEL, "commands")
-    tb.process_base_msg("1user 2b 3c -!hello")
-    tb.run()
+    bb = BaseBot(BOT_NAME, TOKEN, BOT_CHANNEL, "commands.basebot")
+    bb.process_base_msg("1user 2b 3c -!cookie")
+    bb.run()

@@ -2,7 +2,7 @@ from typing import Any, Optional
 import requests
 
 from blortbot import Corpus
-from . import command
+from .. import command
 
 
 @command('learn', 'Swap knowledge to new subject')
